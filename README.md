@@ -1,4 +1,4 @@
-# space.io by Andy Wang
+# "space.io"
 
 I built this alongside two socket.io, Phaser, and node.js tutorials. Not completely original!
 
