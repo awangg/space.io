@@ -19,7 +19,6 @@ app.get('/', function(req, res) {
 })
 
 io.on('connection', function(socket) {
-	console.log('user connected')
 	players[socket.id] = {
 		rotation: 0,
 		x: Math.floor(Math.random() * 900) + 50,
@@ -29,15 +28,14 @@ io.on('connection', function(socket) {
 	}
 	socket.emit('currentPlayers', players)
 	socket.broadcast.emit('newPlayer', players[socket.id])
-	
+
 	socket.emit('powerupLocation', shield)
-	
+
 	socket.on('disconnect', function() {
-		console.log('user disconnected')
 		delete players[socket.id]
 		io.emit('disconnect', socket.id)
 	})
-	
+
 	socket.on('playerMovement', function(movementData) {
 		if(players[socket.id] != undefined) {
 			players[socket.id].x = movementData.x
@@ -52,7 +50,7 @@ io.on('connection', function(socket) {
 		shield.y = Math.floor(Math.random() * 700) + 50
 		io.emit('powerupLocation', shield)
 	})
-	
+
 	socket.on('shoot-bullet', function(bullet_data) {
 		if(players[socket.id] != undefined) {
 			var newBullet = bullet_data
@@ -60,7 +58,7 @@ io.on('connection', function(socket) {
 			server_bullets.push(newBullet)
 		}
 	})
-	
+
 	socket.on('hitPlayer', function() {
 		players[socket.id].score++
 		socket.emit('updateScore', players[socket.id].score)
@@ -77,7 +75,7 @@ function updateBullets() {
 		if(bull != undefined) {
 			bull.x += bull.vx
 			bull.y += bull.vy
-			
+
 			Object.keys(players).forEach( function(index) {
 				var play = players[index]
 				if(bull.id != play.playerId) {
@@ -90,7 +88,7 @@ function updateBullets() {
 					}
 				}
 			})
-			
+
 			if(bull.x >= 1000 || bull.x <= 0 || bull.y >= 800 || bull.y <= 0) {
 				server_bullets.splice(i, 1)
 				i--
